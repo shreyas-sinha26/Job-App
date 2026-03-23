@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PrecisionHire | Find Work. Hire Talent. No Noise.</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Noto+Serif:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface": "#f8f9fb",
+              "tertiary-container": "#a73400",
+              "surface-container-low": "#f2f4f6",
+              "secondary-fixed": "#89f5e7",
+              "inverse-surface": "#2e3132",
+              "surface-dim": "#d9dadc",
+              "on-primary-container": "#cad3ff",
+              "secondary": "#006a61",
+              "surface-tint": "#2151da",
+              "outline-variant": "#c4c5d7",
+              "on-primary": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#0039b5",
+              "surface-container-high": "#e7e8ea",
+              "on-tertiary-fixed": "#390c00",
+              "inverse-primary": "#b7c4ff",
+              "on-secondary-container": "#006f66",
+              "error": "#ba1a1a",
+              "on-secondary-fixed": "#00201d",
+              "tertiary": "#7f2500",
+              "surface-container": "#edeef0",
+              "on-primary-fixed": "#001551",
+              "surface-container-highest": "#e1e2e4",
+              "primary": "#0037b0",
+              "on-surface": "#191c1e",
+              "tertiary-fixed-dim": "#ffb59c",
+              "on-surface-variant": "#434655",
+              "error-container": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#747686",
+              "primary-fixed": "#dce1ff",
+              "primary-fixed-dim": "#b7c4ff",
+              "on-error": "#ffffff",
+              "primary-container": "#1d4ed8",
+              "surface-bright": "#f8f9fb",
+              "on-secondary": "#ffffff",
+              "on-tertiary-fixed-variant": "#832700",
+              "surface-variant": "#e1e2e4",
+              "on-tertiary-container": "#ffc9b7",
+              "on-error-container": "#93000a",
+              "secondary-fixed-dim": "#6bd8cb",
+              "on-background": "#191c1e",
+              "secondary-container": "#86f2e4",
+              "on-secondary-fixed-variant": "#005049",
+              "background": "#f8f9fb",
+              "tertiary-fixed": "#ffdbcf",
+              "inverse-on-surface": "#f0f1f3"
+            },
+            fontFamily: {
+              "headline": ["Instrument Serif", "serif"],
+              "body": ["Plus Jakarta Sans", "sans-serif"],
+              "label": ["Plus Jakarta Sans", "sans-serif"],
+              "mono": ["IBM Plex Mono", "monospace"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px", "md": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .dot-grid {
+            background-image: radial-gradient(circle, #c4c5d7 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .glass-nav {
+            background: rgba(248, 249, 251, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .primary-gradient-btn {
+            background: linear-gradient(135deg, #0037b0 0%, #1d4ed8 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- TopNavBar -->
+<header class="docked full-width top-0 z-50 fixed w-full bg-white/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+<nav class="flex justify-between items-center w-full px-6 py-3 max-w-7xl mx-auto">
+<div class="text-2xl font-serif font-bold text-slate-900 dark:text-white flex items-center gap-1">
+<span class="font-headline italic text-primary">Precision</span>Hire
+            </div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-blue-700 dark:text-blue-400 font-semibold border-b-2 border-blue-700 pb-1" href="#">Jobs</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-600 dark:hover:text-blue-300 transition-colors" href="#">Companies</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-600 dark:hover:text-blue-300 transition-colors" href="#">Applications</a>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="bolt">bolt</span>
+<button class="primary-gradient-btn text-white px-5 py-2.5 rounded-md text-sm font-semibold shadow-sm hover:opacity-90 active:scale-95 transition-all">
+                    Post a Job
+                </button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="User profile with teal background" class="w-full h-full object-cover" data-alt="Professional user profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHxiJKxWd6QQeu_dhab2KMM7tuaj25jNupk5woyQ9PeeybWX0udsWazYJfsLIhS6U6FX0t7gxZgsXC3PfS5PykL2bJNLH9TzLl7iZEOgOYe3ndBCtUpZCKLFmf2suu-4ZUBN5BVASV2UQdhp4OvSBtYIWiLZuiXqwbiei-nV5XERWI1gZLocIYYkfaGUX45p4v7bTknozyt4QmtH52oNZgLxz0hBNx04t_5zStKgVCQSt1ojpsAbYZ_z2ci2gznuUERNAdJnO-21Tt"/>
+</div>
+</div>
+</nav>
+</header>
+<main class="relative pt-16">
+<!-- Hero Section -->
+<section class="relative min-h-[921px] flex items-center overflow-hidden dot-grid">
+<div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full py-20">
+<div class="space-y-8 z-10">
+<h1 class="font-headline text-6xl md:text-7xl leading-[1.1] text-on-surface tracking-tight">
+                        Find Work. <br/>
+<span class="italic text-primary">Hire Talent.</span><br/>
+                        No Noise.
+                    </h1>
+<p class="text-on-surface-variant text-lg md:text-xl max-w-lg leading-relaxed">
+                        The curated marketplace where high-intent professionals meet top-tier companies. No spam, no ghosting, just precision.
+                    </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button class="primary-gradient-btn text-white px-8 py-4 rounded-md font-semibold text-lg flex items-center gap-2 group hover:opacity-95 transition-all shadow-lg shadow-primary/20">
+                            Get Hired
+                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<button class="bg-white border border-primary text-primary px-8 py-4 rounded-md font-semibold text-lg hover:bg-surface-container-low transition-colors">
+                            Post a Job
+                        </button>
+</div>
+</div>
+<!-- Decorative Side -->
+<div class="relative hidden lg:block h-[600px]">
+<!-- Floating Cards -->
+<div class="absolute top-0 right-0 w-80 bg-surface-container-lowest p-6 rounded-xl shadow-2xl rotate-3 border border-outline-variant/10 z-20">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="palette">palette</span>
+</div>
+<span class="font-mono text-[10px] bg-secondary-fixed-dim px-2 py-0.5 rounded-full text-on-secondary-fixed">ACTIVE</span>
+</div>
+<h3 class="font-bold text-xl mb-1">Senior Product Designer</h3>
+<p class="text-on-surface-variant text-sm mb-4">Loom • San Francisco, CA</p>
+<div class="flex gap-2">
+<div class="bg-surface-container px-3 py-1 rounded-full text-xs font-medium">$160k - $210k</div>
+<div class="bg-surface-container px-3 py-1 rounded-full text-xs font-medium">Remote</div>
+</div>
+</div>
+<div class="absolute bottom-20 left-10 w-72 bg-surface-container-lowest p-6 rounded-xl shadow-xl -rotate-6 border border-outline-variant/10 z-10 opacity-90">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 bg-primary/10 rounded-full overflow-hidden">
+<img alt="Designer Profile" class="w-full h-full object-cover" data-alt="User profile avatar portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCneH5nzi6oUQYGPvIA6Y0AM06dAq-kwcotfRJRAhvAMJ1RmQqtFTLpiS92j2rME2V6Bz0kWRtZ61b0cqxpFwgx4O21Yv7FRU9lp4DSyMTMBkYgdI0J4sJ4LYvr_u4X4xmSuh-reeroAEaovTLmpBOOcr2r7KF1ca3TMx9EZ23myBHAYuN3DT34vGUZp69RMsmDje7zF-gF_0L3WNXGqBvnkCd-7qUjhcqecTKg8fYdFYu_pDyFK-FO05soYBs_e0dvcDrkfyS7TOh1"/>
+</div>
+<div>
+<h4 class="font-bold text-sm">Alex Rivera</h4>
+<p class="text-on-surface-variant text-[10px]">Staff Engineer @ Stripe</p>
+</div>
+</div>
+<div class="space-y-2">
+<div class="h-2 w-full bg-surface-container rounded-full"></div>
+<div class="h-2 w-4/5 bg-surface-container rounded-full"></div>
+</div>
+<div class="mt-4 flex justify-end">
+<button class="text-primary text-xs font-bold underline decoration-2 underline-offset-4">View Profile</button>
+</div>
+</div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-10"></div>
+</div>
+</div>
+</section>
+<!-- Trust Strip -->
+<section class="bg-surface-container-low py-12">
+<div class="max-w-7xl mx-auto px-6 text-center">
+<p class="font-mono text-sm text-outline tracking-widest uppercase mb-10">Trusted by 12,000+ industry leaders</p>
+<div class="flex flex-wrap justify-center items-center gap-12 md:gap-20 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+<img alt="Stripe" class="h-8" data-alt="Stripe company logo gray" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUdg-jfBvGInr7R66K9L9x_xyDvoArRZIEIdPsT1LYze0SUrdUYXU0tLdiMX_PHNXYu7lUdSJ57KTHsR8Id7Mqasn5JPKuWiY_np4w0EbYKbkDjyOrzlm2TNyneHesuXaFmiYA87UX3xSt-TwK0lxd_sC2ulrBuTPs_wR55Q3bmyrYmmfZl-P1p061CgJ3D133OgpQyUfHBsVfg5DO-MhSj08JHAHBa1qOCkpDRUuuNRG2slBI7EThwErl-6vuAlzoLoI-PunziC1U"/>
+<img alt="Airbnb" class="h-8" data-alt="Airbnb company logo gray" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDv8AUjWAY11h0h2sb3QRVuJIWw4WgtuGWq9ISPmFdm0Qi8rmQbiBA-XUIQSBUsKbTpYE2xgIIdVtQoWcuKAOSXsMjG9nvNW9CxdaT0RaHCvnOCAN6Gq5VzYUckqsHZEv-74sKyAIbtz7Uk3WV3lmYhdE_Sw8aChAtUXZGFv19DHhpTWEQ5KAoAO4rQ6MoWomlKwd4PL34Y2OjGn8Od5h1-FzJ0CaxidEbMqYaqzDzYdC8HFkbyJNJAYLEaLpVlkwlQB4URMuPRgvlM"/>
+<img alt="Vercel" class="h-8" data-alt="Vercel company logo gray" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMalhM-DgpVo5a7anG4Wi4rqc3hMJn9yUsZdF38iXjLoGz_duO3gBJ6jyS-ReXo3B3W8Ih7r7KYD1XCzy6iGniKkPOGHEPn6sBBQz_vmUjoD-YZ7kijJrf0JES54HqLqY9yrJZIjDEWBAWDoiq4-98XiBUJqO5jpxalF3M13UWEEbdBXm0btHvfF26fU6o783t7t7TO8sy81ZSYSV6rs3Y5e1DwK9thnMJ9A6xo67fd0B4nB_SLXt_kWgh9Kx93YLxdhjdS86JB4AK"/>
+<img alt="Slack" class="h-8" data-alt="Slack company logo gray" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJhrayucIi1KCGwqIEdP4cP3u945l43YGa-ZeLDpky1Z-ID9XhBGrae3G6lMvcByLoQVzx4jD6kUEjGQm-06fNRPD00AXBK3bJ4jH825qYlJH01mSo5WXWP0WfXi5NweTH7zHMF5o98YIxE0DxRC5eLKzN2Gn6JHsKxJ8GH-dsiYsA9EQPzs1O8Qd-k9luhAVOboCwynk5wYA4cFlLA3vOgkeQ8OSB-to9-IYTe5ILaqmxOndDSDskCAub7xCHulYqF3j0O58FXJyf"/>
+<img alt="Github" class="h-8" data-alt="Github company logo gray" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJfo0TQ9m-EOjLDiDQTpaVHtgRlDmI-pkGXC627nnj7j8krk3JyVO5odGUmAKV3-HnWTKYluOfttL3KZoIjZ3BJJNtqhR5DO3UZ_QP_fXLxnNDSr_eHrfOVsqaJHHc3QQ2F7MDqJ28FZDaBgNOiLRwdp3v3oVniwLYvepqBr5eG0y_QoNuJKZ5sA5VOGMz1PBaEMHKZxvAk1Hcjd3hNel2HSdV8kBD7UgxxeGdqlw6RJtFHwMpSkS3j2kVe3oqDp8Q7scbDuwMvHND"/>
+</div>
+</div>
+</section>
+<!-- Feature Strip -->
+<section class="py-24 bg-surface">
+<div class="max-w-7xl mx-auto px-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+<div class="flex flex-col items-center text-center space-y-4">
+<div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<h3 class="font-bold text-xl font-body">Smart Matching</h3>
+<p class="text-on-surface-variant leading-relaxed">Our proprietary AI filters out noise and highlights candidates who actually match your culture and tech stack.</p>
+</div>
+<div class="flex flex-col items-center text-center space-y-4">
+<div class="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-secondary text-3xl" data-icon="verified_user">verified_user</span>
+</div>
+<h3 class="font-bold text-xl font-body">Verified Employers</h3>
+<p class="text-on-surface-variant leading-relaxed">Every company is manually vetted by our team to ensure legitimate listings, fair pay, and positive environments.</p>
+</div>
+<div class="flex flex-col items-center text-center space-y-4">
+<div class="w-16 h-16 rounded-full bg-tertiary-fixed/30 flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-tertiary text-3xl" data-icon="update">update</span>
+</div>
+<h3 class="font-bold text-xl font-body">Real-time Status</h3>
+<p class="text-on-surface-variant leading-relaxed">No more black holes. Get instant updates when your application is viewed, shortlisted, or declined.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- How it Works -->
+<section class="py-24 bg-surface-container-low/50">
+<div class="max-w-7xl mx-auto px-6">
+<div class="mb-20 text-center">
+<h2 class="font-headline text-5xl mb-4">How it works</h2>
+<p class="text-on-surface-variant max-w-xl mx-auto">Three simple steps to transition from searching to thriving in your next role.</p>
+</div>
+<div class="relative">
+<!-- Dashed Connection Line (Desktop) -->
+<div class="hidden md:block absolute top-1/2 left-0 w-full h-px border-t-2 border-dashed border-outline-variant/30 -z-10"></div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Step 1 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/5 text-center flex flex-col items-center">
+<div class="w-12 h-12 bg-on-surface text-surface rounded-full flex items-center justify-center font-bold mb-6 text-xl">1</div>
+<h4 class="text-xl font-bold mb-3">Create Profile</h4>
+<p class="text-on-surface-variant text-sm">Upload your work history or sync with LinkedIn in one click. Our system highlights your unique strengths.</p>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/5 text-center flex flex-col items-center">
+<div class="w-12 h-12 bg-on-surface text-surface rounded-full flex items-center justify-center font-bold mb-6 text-xl">2</div>
+<h4 class="text-xl font-bold mb-3">Browse &amp; Apply</h4>
+<p class="text-on-surface-variant text-sm">Use precision filters to find roles that match your salary, stack, and values. No fluff applications allowed.</p>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/5 text-center flex flex-col items-center">
+<div class="w-12 h-12 bg-primary text-on-primary rounded-full flex items-center justify-center font-bold mb-6 text-xl">3</div>
+<h4 class="text-xl font-bold mb-3">Get Hired</h4>
+<p class="text-on-surface-variant text-sm">Communicate directly with hiring managers. Move through the interview pipeline with clarity and speed.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Call to Action -->
+<section class="py-24 max-w-7xl mx-auto px-6">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[500px]">
+<div class="md:col-span-8 bg-primary rounded-xl p-12 text-on-primary flex flex-col justify-end relative overflow-hidden">
+<div class="absolute top-0 right-0 p-12 opacity-10">
+<span class="material-symbols-outlined text-[200px]" data-icon="work">work</span>
+</div>
+<h2 class="font-headline text-5xl mb-6 relative z-10">Ready to level up your career?</h2>
+<p class="text-on-primary-container text-lg max-w-md mb-8 relative z-10">Join 50,000+ professionals already using PrecisionHire to find their dream roles.</p>
+<div class="relative z-10">
+<button class="bg-white text-primary px-8 py-3 rounded-md font-bold hover:bg-surface-container transition-colors">Start Your Search</button>
+</div>
+</div>
+<div class="md:col-span-4 bg-secondary rounded-xl p-10 text-on-primary flex flex-col justify-between">
+<div>
+<h3 class="text-2xl font-bold mb-4">Hiring?</h3>
+<p class="text-white/80">Get access to the top 2% of talent across Design, Engineering, and Product.</p>
+</div>
+<a class="flex items-center gap-2 font-bold group" href="#">
+                        Post a Job 
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#0F172A] text-white w-full py-12">
+<div class="flex flex-col md:flex-row justify-between items-center px-8 max-w-7xl mx-auto">
+<div class="mb-8 md:mb-0">
+<div class="text-xl font-serif text-white flex items-center gap-1 mb-2">
+<span class="italic text-teal-400">Precision</span>Hire
+                </div>
+<p class="text-slate-400 text-sm max-w-xs font-body">Editorial job hunting for the modern professional. Curated, precise, and human-centric.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-10 mb-8 md:mb-0">
+<a class="text-slate-400 hover:text-teal-400 transition-colors font-body text-sm" href="#">About</a>
+<a class="text-slate-400 hover:text-teal-400 transition-colors font-body text-sm" href="#">Privacy</a>
+<a class="text-slate-400 hover:text-teal-400 transition-colors font-body text-sm" href="#">Terms</a>
+<a class="text-slate-400 hover:text-teal-400 transition-colors font-body text-sm" href="#">Contact</a>
+</div>
+<div class="flex flex-col items-end gap-4">
+<div class="flex gap-4">
+<a class="text-slate-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</a>
+<a class="text-slate-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="alternate_email">alternate_email</span>
+</a>
+</div>
+<p class="text-slate-500 text-xs">© 2024 PrecisionHire. All rights reserved.</p>
+</div>
+</div>
+</footer>
+</body></html>

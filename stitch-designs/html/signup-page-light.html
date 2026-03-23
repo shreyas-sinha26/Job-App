@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign Up | PrecisionHire</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface": "#f8f9fb",
+              "tertiary-container": "#a73400",
+              "surface-container-low": "#f2f4f6",
+              "secondary-fixed": "#89f5e7",
+              "inverse-surface": "#2e3132",
+              "surface-dim": "#d9dadc",
+              "on-primary-container": "#cad3ff",
+              "secondary": "#006a61",
+              "surface-tint": "#2151da",
+              "outline-variant": "#c4c5d7",
+              "on-primary": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#0039b5",
+              "surface-container-high": "#e7e8ea",
+              "on-tertiary-fixed": "#390c00",
+              "inverse-primary": "#b7c4ff",
+              "on-secondary-container": "#006f66",
+              "error": "#ba1a1a",
+              "on-secondary-fixed": "#00201d",
+              "tertiary": "#7f2500",
+              "surface-container": "#edeef0",
+              "on-primary-fixed": "#001551",
+              "surface-container-highest": "#e1e2e4",
+              "primary": "#0037b0",
+              "on-surface": "#191c1e",
+              "tertiary-fixed-dim": "#ffb59c",
+              "on-surface-variant": "#434655",
+              "error-container": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#747686",
+              "primary-fixed": "#dce1ff",
+              "primary-fixed-dim": "#b7c4ff",
+              "on-error": "#ffffff",
+              "primary-container": "#1d4ed8",
+              "surface-bright": "#f8f9fb",
+              "on-secondary": "#ffffff",
+              "on-tertiary-fixed-variant": "#832700",
+              "surface-variant": "#e1e2e4",
+              "on-tertiary-container": "#ffc9b7",
+              "on-error-container": "#93000a",
+              "secondary-fixed-dim": "#6bd8cb",
+              "on-background": "#191c1e",
+              "secondary-container": "#86f2e4",
+              "on-secondary-fixed-variant": "#005049",
+              "background": "#f8f9fb",
+              "tertiary-fixed": "#ffdbcf",
+              "inverse-on-surface": "#f0f1f3"
+            },
+            fontFamily: {
+              "headline": ["Instrument Serif", "serif"],
+              "body": ["Plus Jakarta Sans", "sans-serif"],
+              "label": ["Plus Jakarta Sans", "sans-serif"],
+              "mono": ["IBM Plex Mono", "monospace"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .font-serif { font-family: 'Instrument Serif', serif; }
+      .bg-gradient-brand {
+        background: linear-gradient(135deg, #1D4ED8 0%, #0D9488 100%);
+      }
+      .ghost-border {
+        border: 1.5px solid rgba(196, 197, 215, 0.15);
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+      }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface min-h-screen">
+<!-- TopNavBar (Minimal / Suppressed Shell Rules Apply) -->
+<!-- As per instructions, navigation shell is suppressed for transactional screens, but TopNavBar (Minimal) is requested. Rendering only the brand anchor. -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+<a class="text-2xl font-serif font-bold text-slate-900 flex items-center gap-1" href="/">
+                PrecisionHire
+            </a>
+<div class="hidden md:flex items-center gap-6">
+<span class="text-sm font-medium text-slate-500">Already have an account?</span>
+<a class="text-sm font-semibold text-primary hover:text-primary-container transition-colors" href="#">Sign in →</a>
+</div>
+</div>
+</header>
+<main class="flex min-h-screen pt-16 md:pt-0">
+<!-- Left Panel (40%) -->
+<section class="hidden md:flex md:w-[40%] bg-gradient-brand relative overflow-hidden flex-col justify-center px-12 text-white">
+<!-- Animated Blob Elements -->
+<div class="absolute top-[-10%] left-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+<div class="absolute bottom-[-5%] right-[-5%] w-96 h-96 bg-teal-400/20 rounded-full blur-3xl"></div>
+<div class="relative z-10 space-y-8">
+<h1 class="text-6xl lg:text-7xl font-serif italic leading-tight max-w-md">
+                    Your next opportunity is one application away.
+                </h1>
+<!-- Social Proof Cards -->
+<div class="space-y-4 pt-12">
+<div class="glass-card p-4 rounded-xl flex items-center gap-4 max-w-xs shadow-xl transform translate-x-4">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center overflow-hidden">
+<img alt="Sarah profile" class="w-full h-full object-cover" data-alt="Professional headshot of a smiling woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB95jW7yVCm4jANhG7dikg35u_UYtzTn89OrIcRhQMhc6eRXmDiZdNZq6RQw3jaeQusYeAjWctuFdYSV-piY_CPJ-3cKvuH6Rj__xeQYX1fgLZFSPqOWJ3is2wyGno-3V7LjxDCLJc3TRn2pj0AgIr6PpU0gESHtvnzHW3g6yzJOV77IJnyspgKOTVxd0duhv5jq9H2ArRwvORZezQnOYI_ik97Yq4cjRJoPpTnpgvaltjGzwpVr4cd-ror76i25LR9vO73oDFah2FS"/>
+</div>
+<div>
+<p class="text-xs font-mono text-primary uppercase tracking-tighter">Success Story</p>
+<p class="text-sm font-semibold text-on-surface">Sarah got hired at Stripe in 3 weeks</p>
+</div>
+</div>
+<div class="glass-card p-4 rounded-xl flex items-center gap-4 max-w-xs shadow-xl transform -translate-x-2">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="bolt">bolt</span>
+</div>
+<div>
+<p class="text-xs font-mono text-primary uppercase tracking-tighter">Precision Match</p>
+<p class="text-sm font-semibold text-on-surface">450+ companies hiring today</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Form Panel (60%) -->
+<section class="w-full md:w-[60%] flex items-center justify-center p-6 sm:p-12 bg-surface">
+<div class="w-full max-w-[420px] space-y-8">
+<div class="text-center md:text-left">
+<h2 class="text-[28px] font-bold font-body text-on-surface tracking-tight">Initialize Account</h2>
+<p class="text-on-surface-variant mt-2">Start your journey with a curated career experience.</p>
+</div>
+<!-- Role Toggle Pill -->
+<div class="bg-surface-container-low p-1 rounded-full flex gap-1">
+<button class="flex-1 py-2 px-4 rounded-full text-sm font-semibold bg-white text-primary shadow-sm transition-all">
+                        Jobseeker
+                    </button>
+<button class="flex-1 py-2 px-4 rounded-full text-sm font-medium text-on-surface-variant hover:text-on-surface transition-all">
+                        Employer
+                    </button>
+</div>
+<form class="space-y-5">
+<!-- Name Field -->
+<div class="space-y-1.5">
+<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant px-1" for="name">Full Name</label>
+<div class="relative">
+<input class="w-full h-[48px] px-4 bg-surface-container-lowest ghost-border rounded-[10px] focus:ring-0 focus:border-primary focus:border-[1.5px] outline-none transition-all placeholder:text-outline/50" id="name" placeholder="John Doe" type="text"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-secondary opacity-0" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+<!-- Email Field -->
+<div class="space-y-1.5">
+<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant px-1" for="email">Work Email</label>
+<div class="relative">
+<input class="w-full h-[48px] px-4 bg-surface-container-lowest border-primary border-[1.5px] rounded-[10px] focus:ring-0 outline-none transition-all" id="email" placeholder="john@company.com" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-1.5">
+<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant px-1" for="password">Password</label>
+<div class="relative">
+<input class="w-full h-[48px] px-4 bg-surface-container-lowest ghost-border rounded-[10px] focus:ring-0 focus:border-error focus:border-[1.5px] outline-none transition-all" id="password" placeholder="••••••••" type="password"/>
+<p class="text-[10px] text-error mt-1 px-1">Password must be at least 8 characters</p>
+</div>
+</div>
+<div class="flex items-center gap-3 py-2">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/20" id="terms" type="checkbox"/>
+<label class="text-xs text-on-surface-variant" for="terms">
+                            I agree to the <a class="text-primary hover:underline" href="#">Terms of Service</a> and <a class="text-primary hover:underline" href="#">Privacy Policy</a>.
+                        </label>
+</div>
+<!-- Submit Button -->
+<button class="w-full h-[48px] bg-primary text-white font-bold rounded-[10px] shadow-lg shadow-primary/20 hover:bg-primary-container transition-all flex items-center justify-center gap-2 group" type="submit">
+                        Create Account
+                        <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+<div class="relative py-4">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-surface-container-high"></div>
+</div>
+<div class="relative flex justify-center text-xs uppercase">
+<span class="bg-surface px-4 text-on-surface-variant font-mono">Or join with</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 h-[48px] bg-white ghost-border rounded-[10px] text-sm font-semibold text-on-surface hover:bg-surface-container-low transition-colors">
+<img alt="Google" class="w-5 h-5" data-alt="Google colorful logo icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZ7NJGoj1b971cSh3-PmenbJAEhVgtcCdawuypXi2TUI2q5kLo1KZVimgkTIaDYbn8_FZQ3XqNJ5sbOTCXccttAiU2Cw53Pa2K5kIEeBGuj4tkWYerkKO1Nt3Jb_OeLDoViyYxxge_P-0feAzqIRbEkpqO-T94XpLLXVLFl2wRkaL80AE6_afUQHQ5nUH3HmGoymRaLSSNbUVOIdCD_LrkkhIg3CxqeGMwohu1mov3MJOQ1vhOY_jqjJEs7NS9L-pUGq5dfn8kkoIC"/>
+                        Google
+                    </button>
+<button class="flex items-center justify-center gap-3 h-[48px] bg-white ghost-border rounded-[10px] text-sm font-semibold text-on-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+                        Github
+                    </button>
+</div>
+<div class="text-center md:hidden">
+<a class="text-sm font-semibold text-primary" href="#">Already have an account? Sign in →</a>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (Minimal for Focused Page) -->
+<footer class="md:fixed md:bottom-0 md:left-[40%] md:right-0 bg-surface py-6 px-12 border-t border-surface-container-high md:border-t-0">
+<div class="max-w-[420px] mx-auto md:mx-0 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-[10px] font-mono text-outline-variant uppercase tracking-widest">© 2024 PrecisionHire</p>
+<div class="flex gap-6">
+<a class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">Support</a>
+<a class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+</div>
+</div>
+</footer>
+</body></html>

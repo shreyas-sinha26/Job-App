@@ -1,0 +1,238 @@
+/* ═══════════════════════════════════════════════════════════════
+   EmployerApplicationsPage Styles
+   ═══════════════════════════════════════════════════════════════ */
+
+.emp-apps {
+  padding: 32px 0 64px;
+}
+
+.emp-apps__header {
+  margin-bottom: 24px;
+}
+
+.emp-apps__header h1 {
+  font-size: 32px;
+}
+
+.emp-apps__subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+
+/* ── Stats ────────────────────────────────────────────────────── */
+
+.emp-apps__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+
+/* ── Filter Bar ──────────────────────────────────────────────── */
+
+.emp-apps__filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.emp-apps__filter-label {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.emp-apps__filter-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+
+/* ── Split Layout ────────────────────────────────────────────── */
+
+.emp-apps__split {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+
+/* ── List Panel ──────────────────────────────────────────────── */
+
+.emp-apps__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: calc(100vh - 340px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.emp-apps__list-item {
+  padding: 16px;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+  border: 1.5px solid transparent;
+}
+
+.emp-apps__list-item:hover {
+  border-color: var(--brand-primary);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.emp-apps__list-item--active {
+  border-color: var(--brand-primary);
+  background: var(--brand-light);
+}
+
+.emp-apps__list-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.emp-apps__list-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.emp-apps__applicant-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.emp-apps__job-ref {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.emp-apps__list-date {
+  color: var(--text-muted);
+}
+
+.emp-apps__empty-list {
+  text-align: center;
+  padding: 48px 16px;
+}
+
+
+/* ── Detail Panel ────────────────────────────────────────────── */
+
+.emp-apps__detail {
+  position: sticky;
+  top: 88px;
+}
+
+.emp-apps__detail-card {
+  padding: 28px;
+}
+
+.emp-apps__detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.emp-apps__detail-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.emp-apps__detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.emp-apps__detail-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.emp-apps__detail-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.emp-apps__detail-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.emp-apps__detail-letter {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-input);
+}
+
+.emp-apps__detail-letter-text {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.emp-apps__detail-actions {
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.emp-apps__status-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.emp-apps__detail-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  gap: 12px;
+  background: var(--bg-surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-card);
+  color: var(--text-muted);
+}
+
+
+/* ── Responsive ──────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .emp-apps__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .emp-apps__split {
+    grid-template-columns: 1fr;
+  }
+
+  .emp-apps__list {
+    max-height: none;
+  }
+
+  .emp-apps__detail {
+    position: relative;
+    top: 0;
+  }
+}
