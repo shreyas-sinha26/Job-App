@@ -20,6 +20,13 @@
   justify-content: space-between;
   height: 64px;
   gap: 32px;
+  padding: 0 40px;
+}
+
+@media (max-width: 768px) {
+  .navbar__inner {
+    padding: 0 24px;
+  }
 }
 
 .navbar__brand {

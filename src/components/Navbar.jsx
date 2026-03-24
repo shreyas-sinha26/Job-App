@@ -56,7 +56,7 @@ export default function Navbar() {
 
   return (
     <header className="navbar">
-      <nav className="navbar__inner container">
+      <nav className="navbar__inner">
         {/* Brand */}
         <Link to={isEmployer ? '/employer/jobs' : '/jobs'} className="navbar__brand">
           <span className="navbar__brand-accent">Precision</span>Hire
