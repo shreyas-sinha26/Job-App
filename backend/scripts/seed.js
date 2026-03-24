@@ -33,22 +33,34 @@ const seedData = async () => {
     const companies = [
       'Razorpay', 'CRED', 'Zepto', 'Swiggy', 'Meesho', 'Groww',
       'PhonePe', 'Freshworks', 'Postman', 'BrowserStack',
-      'Urban Company', 'Sarvam AI'
+      'Urban Company', 'Sarvam AI', 'Zerodha', 'Ola', 'Zomato', 
+      'Flipkart', 'Cure.fit', 'Unacademy', 'Pine Labs', 'Paytm',
+      'Dream11', 'Lenskart', 'Nykaa', 'Upstox'
     ];
 
-    const jobs = companies.map((company, index) => ({
-      title: `Software Engineer ${index + 1}`,
-      company: company,
-      location: 'Bangalore',
-      type: 'Full-time',
-      experience: 'Mid',
-      salaryMin: 500000 + (index * 100000),
-      salaryMax: 1000000 + (index * 100000),
-      currency: 'INR',
-      tags: ['React', 'Node.js', 'MongoDB'],
-      description: `We are looking for a highly skilled Software Engineer to join our team at ${company}. The ideal candidate will have strong experience in full-stack development. You will be responsible for building highly scalable applications.\n\nRequired Skills: React, Node.js, and MongoDB.\n\nJoin us to build the future of tech!`,
-      employerId: employer._id
-    }));
+    const LOCATIONS = ['Bangalore', 'Mumbai', 'Delhi', 'Chennai'];
+    const JOB_TYPES = ['Full-time', 'Part-time', 'Remote', 'Contract', 'Internship'];
+    const EXPERIENCE_LEVELS = ['Entry', 'Mid', 'Senior', 'Lead'];
+
+    const jobs = companies.map((company, index) => {
+      const loc = LOCATIONS[index % LOCATIONS.length];
+      const type = JOB_TYPES[index % JOB_TYPES.length];
+      const exp = EXPERIENCE_LEVELS[index % EXPERIENCE_LEVELS.length];
+
+      return {
+        title: `Software Engineer ${index + 1}`,
+        company: company,
+        location: loc,
+        type: type,
+        experience: exp,
+        salaryMin: 500000 + (index * 100000),
+        salaryMax: 1000000 + (index * 100000),
+        currency: 'INR',
+        tags: ['React', 'Node.js', 'MongoDB'],
+        description: `We are looking for a highly skilled Software Engineer to join our team at ${company} in ${loc}. The ideal candidate will have strong experience in full-stack development. You will be responsible for building highly scalable applications.\n\nRequired Skills: React, Node.js, and MongoDB. This is a ${type} role at the ${exp} level.\n\nJoin us to build the future of tech!`,
+        employerId: employer._id
+      };
+    });
 
     await Job.insertMany(jobs);
     
