@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { selectCurrentUser, selectIsAuthenticated, logout } from '../features/auth/authSlice';
+import { Menu, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import './Navbar.css';
 
@@ -16,6 +18,15 @@ export default function Navbar() {
 
   const user = useSelector(selectCurrentUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Hide navbar on public pages (landing, signup, login)
   const hideOnPaths = ['/', '/signup', '/login'];
@@ -27,6 +38,7 @@ export default function Navbar() {
   const isEmployer = user?.role === 'employer';
 
   const handleLogout = () => {
+    setIsOpen(false);
     dispatch(logout());
     navigate('/login');
     toast.success("You've been signed out.");
@@ -50,12 +62,22 @@ export default function Navbar() {
           <span className="navbar__brand-accent">Precision</span>Hire
         </Link>
 
+        {/* Hamburger Menu Button */}
+        <button 
+          className="navbar__hamburger"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle navigation"
+        >
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+
         {/* Nav Links */}
-        <div className="navbar__links">
+        <div className={`navbar__links ${isOpen ? 'navbar__links--open' : ''}`}>
           {navLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
+              onClick={() => setIsOpen(false)}
               className={`navbar__link ${
                 location.pathname === link.to ? 'navbar__link--active' : ''
               }`}

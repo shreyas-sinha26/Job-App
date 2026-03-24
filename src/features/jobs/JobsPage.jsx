@@ -23,11 +23,12 @@ export default function JobsPage() {
   const error = useSelector(selectJobsError);
   const filters = useSelector(selectJobFilters);
   const [searchInput, setSearchInput] = useState(filters.search || '');
+  const [sortBy, setSortBy] = useState('newest');
 
   // Fetch jobs when filters change
   useEffect(() => {
-    dispatch(fetchJobs(filters));
-  }, [dispatch, filters]);
+    dispatch(fetchJobs({ ...filters, sortBy }));
+  }, [dispatch, filters, sortBy]);
 
   // Debounced search
   useEffect(() => {
@@ -95,9 +96,15 @@ export default function JobsPage() {
               <button
                 key={type}
                 className={`jobs-sidebar__chip ${
-                  filters.type === type ? 'jobs-sidebar__chip--active' : ''
+                  (filters.type || []).includes(type) ? 'jobs-sidebar__chip--active' : ''
                 }`}
-                onClick={() => handleFilterChange('type', type)}
+                onClick={() => {
+                  const current = filters.type || [];
+                  const updated = current.includes(type)
+                    ? current.filter(t => t !== type)
+                    : [...current, type];
+                  dispatch(setFilters({ type: updated }));
+                }}
               >
                 {type}
               </button>
@@ -153,6 +160,17 @@ export default function JobsPage() {
               {status === 'loading' && 'Searching…'}
             </p>
           </div>
+          <select 
+            value={sortBy} 
+            onChange={e => setSortBy(e.target.value)}
+            className="jobs-page__sort input"
+            style={{ width: 'auto', height: '40px' }}
+          >
+            <option value="newest">Most Recent</option>
+            <option value="salary_desc">Salary: High to Low</option>
+            <option value="salary_asc">Salary: Low to High</option>
+            <option value="relevant">Most Relevant</option>
+          </select>
         </div>
 
         {/* Error */}

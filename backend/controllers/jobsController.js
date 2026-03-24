@@ -13,7 +13,10 @@ exports.getJobs = async (req, res, next) => {
         { company: { $regex: search, $options: 'i' } }
       ];
     }
-    if (type) query.type = type;
+    if (type) {
+      const types = Array.isArray(type) ? type : type.split(',');
+      query.type = { $in: types };
+    }
     if (location) query.location = { $regex: location, $options: 'i' };
     if (experience) query.experience = experience;
     
@@ -23,8 +26,25 @@ exports.getJobs = async (req, res, next) => {
       if (salaryMax) query.$and.push({ salaryMax: { $lte: Number(salaryMax) } });
     }
 
-    const jobs = await Job.find(query).sort({ postedAt: -1 }).populate('employerId', 'name email');
-    res.json({ jobs, total: jobs.length });
+    let sortObj = { postedAt: -1 }; // default: newest
+    if (req.query.sortBy === 'salary_desc') sortObj = { salaryMax: -1 };
+    if (req.query.sortBy === 'salary_asc')  sortObj = { salaryMin: 1 };
+    if (req.query.sortBy === 'relevant')    sortObj = { postedAt: -1 }; // keep default, relevance is search-based
+
+    const jobs = await Job.find(query).sort(sortObj).populate('employerId', 'name email').lean();
+    
+    // Add applicationCount
+    const jobsWithCounts = await Promise.all(
+      jobs.map(async (job) => {
+        const count = await Application.countDocuments({ jobId: job._id });
+        job.id = job._id.toString();
+        delete job._id;
+        delete job.__v;
+        return { ...job, applicationsCount: count };
+      })
+    );
+
+    res.json({ jobs: jobsWithCounts, total: jobsWithCounts.length });
   } catch (error) {
     next(error);
   }
@@ -69,7 +89,7 @@ exports.updateJob = async (req, res, next) => {
     }
 
     if (job.employerId.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized to edit this job' });
+      return res.status(403).json({ message: 'Not authorized to update this job' });
     }
 
     const updatedJob = await Job.findByIdAndUpdate(

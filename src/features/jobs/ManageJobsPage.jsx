@@ -29,14 +29,17 @@ export default function ManageJobsPage() {
   const createStatus = useSelector(selectJobCreateStatus);
 
   const [showForm, setShowForm] = useState(false);
+  const [step, setStep] = useState(1);
   const [editingJob, setEditingJob] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [deletingIds, setDeletingIds] = useState([]);
 
   const {
     register,
     handleSubmit,
     reset,
     watch,
+    trigger,
     formState: { errors, isValid, touchedFields, dirtyFields }
   } = useForm({
     mode: 'onTouched',
@@ -74,6 +77,7 @@ export default function ManageJobsPage() {
       tags: '',
       description: '',
     });
+    setStep(1);
     setShowForm(true);
   };
 
@@ -90,6 +94,7 @@ export default function ManageJobsPage() {
       tags: job.tags ? job.tags.join(', ') : '',
       description: job.description,
     });
+    setStep(1);
     setShowForm(true);
   };
 
@@ -122,14 +127,24 @@ export default function ManageJobsPage() {
   };
 
   const handleDelete = useCallback(async (id) => {
+    setDeletingIds(prev => [...prev, id]);
+    setDeleteConfirm(null);
     try {
       await dispatch(deleteJob(id)).unwrap();
       toast.success('Job listing removed.');
-      setDeleteConfirm(null);
     } catch (err) {
+      setDeletingIds(prev => prev.filter(delId => delId !== id));
       toast.error('Failed to delete. Please try again.');
     }
   }, [dispatch]);
+
+  const displayedJobs = jobs.filter(j => !deletingIds.includes(j.id));
+  
+  const activeJobs = jobs.filter(j => j.status !== 'paused').length;
+  const totalApplications = jobs.reduce((sum, j) => sum + (j.applicationsCount || 0), 0);
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const newThisWeek = jobs.filter(j => new Date(j.postedAt) > oneWeekAgo).length;
+  const applyRate = totalApplications > 0 ? ((totalApplications / (activeJobs || 1)) / 100 * 100).toFixed(1) : 0; // The instruction says (total / (activeJobs * 100)) * 100 which cancels out 100. So (total / activeJobs). Wait, the formula was exactly given as `((totalApplications / (activeJobs * 100)) * 100).toFixed(1)`. Let's just do `(totalApplications && activeJobs ? ((totalApplications / activeJobs) * 100).toFixed(1) : 0)`. Wait, I will use `((totalApplications / ((activeJobs||1) * 100)) * 100).toFixed(1)` to mirror what was requested without div by 0. Wait, `(total/(activeJobs*100))*100` means `total / activeJobs`. No, applyRate should be `total / activeJobs`? Wait if there's 5 apps for 1 job, apply rate is 500%?! No, if it's applications divided by views * 100. We don't have views. The prompt says exactly this copy. Ok!
 
 
 
@@ -166,20 +181,24 @@ export default function ManageJobsPage() {
       {/* ── Stats Strip ───────────────────────────────────────── */}
       <div className="manage-jobs__stats container">
         <div className="manage-jobs__stat card">
-          <span className="manage-jobs__stat-value">{jobs.length}</span>
-          <span className="manage-jobs__stat-label">Total Listings</span>
+          <span className="manage-jobs__stat-value">{activeJobs}</span>
+          <span className="manage-jobs__stat-label">Active Jobs</span>
         </div>
         <div className="manage-jobs__stat card">
           <span className="manage-jobs__stat-value manage-jobs__stat-value--active">
-            {jobs.filter((j) => j.type === 'Full-time' || j.type === 'Remote').length}
+            {totalApplications}
           </span>
-          <span className="manage-jobs__stat-label">Active</span>
+          <span className="manage-jobs__stat-label">Total Applications</span>
         </div>
         <div className="manage-jobs__stat card">
           <span className="manage-jobs__stat-value manage-jobs__stat-value--draft">
-            {jobs.filter((j) => j.type === 'Contract' || j.type === 'Part-time').length}
+            {newThisWeek}
           </span>
-          <span className="manage-jobs__stat-label">Others</span>
+          <span className="manage-jobs__stat-label">New This Week</span>
+        </div>
+        <div className="manage-jobs__stat card">
+          <span className="manage-jobs__stat-value">{applyRate}%</span>
+          <span className="manage-jobs__stat-label">Apply Rate</span>
         </div>
       </div>
 
@@ -191,7 +210,7 @@ export default function ManageJobsPage() {
               <div key={i} className="skeleton" style={{ height: 72, borderRadius: 12, marginBottom: 8 }} />
             ))}
           </div>
-        ) : jobs.length === 0 ? (
+        ) : displayedJobs.length === 0 ? (
           <div className="manage-jobs__empty">
             <div className="jobs-empty__icon">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
@@ -215,7 +234,7 @@ export default function ManageJobsPage() {
               <span className="manage-jobs__col manage-jobs__col--apps">Apps</span>
               <span className="manage-jobs__col manage-jobs__col--actions">Actions</span>
             </div>
-            {jobs.map((job) => (
+            {displayedJobs.map((job) => (
               <div key={job.id} className="manage-jobs__table-row" id={`manage-job-${job.id}`}>
                 <div className="manage-jobs__col manage-jobs__col--title">
                   <span className="manage-jobs__job-title">{job.title}</span>
@@ -243,6 +262,19 @@ export default function ManageJobsPage() {
                   </button>
                 </span>
                 <div className="manage-jobs__col manage-jobs__col--actions">
+                  <label className="status-toggle" style={{ marginRight: '8px' }}>
+                    <input
+                      type="checkbox"
+                      checked={job.status !== 'paused'}
+                      onChange={() => dispatch(updateJob({ 
+                        id: job.id, 
+                        status: job.status === 'paused' ? 'active' : 'paused' 
+                      }))}
+                    />
+                    <span className="status-toggle__pill">
+                      {job.status === 'paused' ? 'Paused' : 'Active'}
+                    </span>
+                  </label>
                   <button
                     className="btn btn--ghost btn--sm btn--icon-only"
                     onClick={() => openEditForm(job)}
@@ -286,12 +318,23 @@ export default function ManageJobsPage() {
             <h2 className="text-h2" style={{ marginBottom: 24 }}>
               {editingJob ? 'Edit Job Posting' : 'Create New Job'}
             </h2>
+            
+            <div className="modal__steps">
+              {[1, 2].map(n => (
+                <div 
+                  key={n}
+                  className={`modal__step-dot ${step >= n ? 'modal__step-dot--active' : ''}`}
+                />
+              ))}
+            </div>
 
             <form className="manage-jobs__form" onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="manage-jobs__form-grid">
-                {/* Title */}
-                <div className="manage-jobs__form-field manage-jobs__form-field--full">
-                  <label>Job Title *</label>
+                {step === 1 && (
+                  <>
+                    {/* Title */}
+                    <div className="manage-jobs__form-field manage-jobs__form-field--full">
+                      <label>Job Title *</label>
                   <input
                     className={`input ${getFieldState('title') === 'error' ? 'input--error' : ''} ${getFieldState('title') === 'valid' ? 'input--success' : ''}`}
                     placeholder="e.g., Senior Frontend Engineer"
@@ -335,17 +378,21 @@ export default function ManageJobsPage() {
                   </select>
                 </div>
 
-                {/* Experience */}
-                <div className="manage-jobs__form-field">
-                  <label>Experience *</label>
-                  <select className="input" {...register('experience', { required: 'Required' })}>
-                    {EXP_LEVELS.map((e) => (
-                      <option key={e} value={e}>{e}</option>
-                    ))}
-                  </select>
-                </div>
+                    {/* Experience */}
+                    <div className="manage-jobs__form-field">
+                      <label>Experience *</label>
+                      <select className="input" {...register('experience', { required: 'Required' })}>
+                        {EXP_LEVELS.map((e) => (
+                          <option key={e} value={e}>{e}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
+                )}
 
-                {/* Salary Min */}
+                {step === 2 && (
+                  <>
+                    {/* Salary Min */}
                 <div className="manage-jobs__form-field">
                   <label>Min Salary (₹) *</label>
                   <input
@@ -389,40 +436,67 @@ export default function ManageJobsPage() {
                   {errors.tags && <span className="auth-field__error" aria-live="polite">{errors.tags.message}</span>}
                 </div>
 
-                {/* Description */}
-                <div className="manage-jobs__form-field manage-jobs__form-field--full">
-                  <label>Description (HTML supported) *</label>
-                  <textarea
-                    className={`textarea ${getFieldState('description') === 'error' ? 'input--error' : ''} ${getFieldState('description') === 'valid' ? 'input--success' : ''}`}
-                    placeholder="Describe the role, responsibilities, and requirements…"
-                    rows={6}
-                    {...register('description', {
-                      required: 'Description is required',
-                      minLength: { value: 100, message: 'Must be at least 100 characters' }
-                    })}
-                  />
-                  <div className="apply-modal__char-count text-xsmall" style={{ color: descriptionWatch.length < 100 && touchedFields.description ? 'var(--danger)' : 'var(--text-muted)' }}>
-                    {descriptionWatch.length} / 100 min
-                  </div>
-                  {errors.description && <span className="auth-field__error" aria-live="polite">{errors.description.message}</span>}
-                </div>
+                    {/* Description */}
+                    <div className="manage-jobs__form-field manage-jobs__form-field--full">
+                      <label>Description (HTML supported) *</label>
+                      <textarea
+                        className={`textarea ${getFieldState('description') === 'error' ? 'input--error' : ''} ${getFieldState('description') === 'valid' ? 'input--success' : ''}`}
+                        placeholder="Describe the role, responsibilities, and requirements…"
+                        rows={6}
+                        {...register('description', {
+                          required: 'Description is required',
+                          minLength: { value: 100, message: 'Must be at least 100 characters' }
+                        })}
+                      />
+                      <div className="apply-modal__char-count text-xsmall" style={{ color: descriptionWatch.length < 100 && touchedFields.description ? 'var(--danger)' : 'var(--text-muted)' }}>
+                        {descriptionWatch.length} / 100 min
+                      </div>
+                      {errors.description && <span className="auth-field__error" aria-live="polite">{errors.description.message}</span>}
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className="manage-jobs__form-actions">
-                <button
-                  type="button"
-                  className="btn btn--ghost"
-                  onClick={() => setShowForm(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn--primary btn--lg"
-                  disabled={createStatus === 'loading' || !isValid}
-                >
-                  {createStatus === 'loading' ? 'Saving…' : editingJob ? 'Update Job' : 'Publish Job'}
-                </button>
+                {step === 1 ? (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn--ghost"
+                      onClick={() => setShowForm(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn--primary btn--lg"
+                      onClick={() => {
+                        trigger(['title','company','location','type','experience']).then(valid => {
+                          if (valid) setStep(2);
+                        });
+                      }}
+                    >
+                      Next →
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn--ghost"
+                      onClick={() => setStep(1)}
+                    >
+                      ← Back
+                    </button>
+                    <button
+                      type="submit"
+                      className="btn btn--primary btn--lg"
+                      disabled={createStatus === 'loading' || !isValid}
+                    >
+                      {createStatus === 'loading' ? 'Saving…' : editingJob ? 'Update Job' : 'Save & Publish'}
+                    </button>
+                  </>
+                )}
               </div>
             </form>
           </div>

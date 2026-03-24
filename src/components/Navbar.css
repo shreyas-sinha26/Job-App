@@ -98,11 +98,25 @@
 
 /* ── Mobile ──────────────────────────────────────────────────── */
 @media (max-width: 768px) {
+  .navbar__hamburger { display: flex; align-items: center; justify-content: center; color: var(--text-primary); }
   .navbar__links {
     display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 64px; left: 0; right: 0;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    gap: 8px;
+    z-index: 100;
   }
+  .navbar__links--open { display: flex; }
 
   .navbar__username {
     display: none;
   }
+}
+@media (min-width: 769px) {
+  .navbar__hamburger { display: none; }
+  .navbar__links { display: flex; }
 }

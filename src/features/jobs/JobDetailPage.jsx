@@ -9,6 +9,7 @@ import {
   selectJobsError,
   clearSelectedJob,
 } from './jobsSlice';
+import { fetchApplications } from '../applications/applicationsSlice';
 import ApplyModal from './ApplyModal';
 import { formatSalary, stringToHslColor } from '../../utils/formatters';
 import toast from 'react-hot-toast';
@@ -22,8 +23,15 @@ export default function JobDetailPage() {
   const job = useSelector(selectSelectedJob);
   const status = useSelector(selectJobDetailStatus);
   const error = useSelector(selectJobsError);
+  const appStatus = useSelector((state) => state.applications.status);
+  const applications = useSelector((state) => state.applications.items);
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
+
+  const hasApplied = applications.some(
+    app => app.jobId === job?.id || app.job?.id === job?.id
+  );
 
   const handleToggleSave = () => {
     setIsSaved(!isSaved);
@@ -38,6 +46,10 @@ export default function JobDetailPage() {
     dispatch(fetchJobById(id));
     return () => dispatch(clearSelectedJob());
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (appStatus === 'idle') dispatch(fetchApplications());
+  }, [appStatus, dispatch]);
 
   // Loading skeleton
   if (status === 'loading' || status === 'idle') {
@@ -129,9 +141,43 @@ export default function JobDetailPage() {
           </div>
 
           {/* Description */}
-          <section className="job-detail__description">
-            <div dangerouslySetInnerHTML={{ __html: job.description }} />
-          </section>
+          <div className="job-detail__tabs">
+            {['overview', 'requirements', 'company'].map(tab => (
+              <button
+                key={tab}
+                className={`job-detail__tab ${activeTab === tab ? 'job-detail__tab--active' : ''}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          {activeTab === 'overview' && (
+            <section className="job-detail__description">
+              <h3>About the Role</h3>
+              <div dangerouslySetInnerHTML={{ __html: job.description }} />
+            </section>
+          )}
+
+          {activeTab === 'requirements' && (
+            <section className="job-detail__description">
+              <h3>Requirements</h3>
+              <ul className="job-detail__requirements">
+                <li>Experience level: {job.experience}</li>
+                <li>Employment type: {job.type}</li>
+                <li>Skills: {job.tags.join(', ')}</li>
+              </ul>
+            </section>
+          )}
+
+          {activeTab === 'company' && (
+            <section className="job-detail__description">
+              <h3>{job.company}</h3>
+              <p>Location: {job.location}</p>
+              <p>Job posted: {formatDistanceToNow(new Date(job.postedAt))} ago</p>
+            </section>
+          )}
         </div>
 
         {/* ── Sticky Sidebar ───────────────────────────────────── */}
@@ -168,14 +214,20 @@ export default function JobDetailPage() {
               </div>
             </div>
 
-            <button
-              className="btn btn--primary btn--lg btn--full job-detail__apply-btn"
-              onClick={() => setShowApplyModal(true)}
-              id="apply-now-btn"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-              Apply Now
-            </button>
+            {hasApplied ? (
+              <button className="btn btn--applied" disabled>
+                ✓ Application Submitted
+              </button>
+            ) : (
+              <button
+                className="btn btn--primary btn--lg btn--full job-detail__apply-btn"
+                onClick={() => setShowApplyModal(true)}
+                id="apply-now-btn"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                Apply Now
+              </button>
+            )}
             <button
               className={`btn btn--lg btn--full ${isSaved ? 'btn--secondary' : 'btn--outline'}`}
               style={{ marginTop: '12px', borderColor: isSaved ? 'var(--brand-primary)' : '', color: isSaved ? 'var(--brand-primary)' : '' }}

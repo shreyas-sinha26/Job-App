@@ -12,9 +12,10 @@ export const fetchJobs = createAsyncThunk(
     try {
       const params = new URLSearchParams();
       if (filters.search) params.set('search', filters.search);
-      if (filters.type) params.set('type', filters.type);
+      if (filters.type && filters.type.length > 0) params.set('type', filters.type.join(','));
       if (filters.location) params.set('location', filters.location);
       if (filters.experience) params.set('experience', filters.experience);
+      if (filters.sortBy) params.set('sortBy', filters.sortBy);
 
       const response = await api.get(`/jobs?${params.toString()}`);
       return response.data; // { jobs, total }
@@ -92,7 +93,7 @@ const jobsSlice = createSlice({
     filters: {
       search: '',
       location: '',
-      type: '',
+      type: [],
       experience: '',
     },
   },
@@ -101,7 +102,7 @@ const jobsSlice = createSlice({
       state.filters = { ...state.filters, ...action.payload };
     },
     clearFilters(state) {
-      state.filters = { search: '', location: '', type: '', experience: '' };
+      state.filters = { search: '', location: '', type: [], experience: '' };
     },
     clearSelectedJob(state) {
       state.selectedJob = null;

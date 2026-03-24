@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { format } from 'date-fns';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import {
   fetchEmployerApplications,
@@ -32,12 +32,20 @@ export default function EmployerApplicationsPage() {
   const error = useSelector(selectApplicationsError);
   const [selectedApp, setSelectedApp] = useState(null);
   const [filterStatus, setFilterStatus] = useState('');
+  const [filterJobId, setFilterJobId] = useState(location.state?.filterJobId || '');
+  const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
 
-  const filterJobId = location.state?.filterJobId;
+  // Reset expansion when selecting a different app
+  useEffect(() => {
+    setIsExpanded(false);
+  }, [selectedApp]);
 
   useEffect(() => {
     dispatch(fetchEmployerApplications());
   }, [dispatch]);
+
+  const uniqueJobs = Array.from(new Set(applications.map(a => a.jobId))).map(id => applications.find(a => a.jobId === id));
 
   const handleStatusChange = async (appId, newStatus) => {
     try {
@@ -100,9 +108,26 @@ export default function EmployerApplicationsPage() {
         </div>
 
         {/* Filter Bar */}
-        <div className="emp-apps__filter-bar">
-          <span className="emp-apps__filter-label text-small">Filter by status:</span>
-          <div className="emp-apps__filter-chips">
+        <div className="emp-apps__filter-bar" style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center' }}>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span className="emp-apps__filter-label text-small">Job:</span>
+            <select 
+              className="input" 
+              style={{ width: 'auto', minWidth: '200px', height: '36px' }}
+              value={filterJobId}
+              onChange={(e) => setFilterJobId(e.target.value)}
+            >
+              <option value="">All Jobs</option>
+              {uniqueJobs.map(app => (
+                <option key={app.jobId} value={app.jobId}>{app.jobTitle}</option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span className="emp-apps__filter-label text-small">Status:</span>
+            <div className="emp-apps__filter-chips">
             <button
               className={`jobs-sidebar__chip ${!filterStatus ? 'jobs-sidebar__chip--active' : ''}`}
               onClick={() => setFilterStatus('')}
@@ -120,6 +145,7 @@ export default function EmployerApplicationsPage() {
             ))}
           </div>
         </div>
+      </div>
 
         {/* Loading */}
         {status === 'loading' && (
@@ -153,6 +179,9 @@ export default function EmployerApplicationsPage() {
                       : 'No applications match this filter.'
                     }
                   </p>
+                  {jobFilteredApps.length === 0 && (
+                    <Link to="/employer/manage" className="btn btn--primary" style={{ marginTop: 16 }}>Go to Manage Jobs</Link>
+                  )}
                 </div>
               ) : (
                 filteredApps.map((app) => (
@@ -210,8 +239,19 @@ export default function EmployerApplicationsPage() {
                   <div className="emp-apps__detail-letter">
                     <h4 className="emp-apps__detail-section-title">Cover Letter</h4>
                     <p className="emp-apps__detail-letter-text text-body">
-                      {selectedApp.coverLetter || 'No cover letter provided.'}
+                      {(selectedApp.coverLetter && selectedApp.coverLetter.length > 200 && !isExpanded) 
+                        ? `${selectedApp.coverLetter.substring(0, 200)}...`
+                        : (selectedApp.coverLetter || 'No cover letter provided.')}
                     </p>
+                    {selectedApp.coverLetter && selectedApp.coverLetter.length > 200 && (
+                      <button 
+                        className="btn btn--ghost btn--sm" 
+                        style={{ marginTop: '8px', padding: '0' }}
+                        onClick={() => setIsExpanded(!isExpanded)}
+                      >
+                        {isExpanded ? 'Read Less' : 'Read More'}
+                      </button>
+                    )}
                   </div>
 
                   <div className="emp-apps__detail-actions">

@@ -7,6 +7,7 @@ import {
   selectApplicationsStatus,
   selectApplicationsError,
 } from './applicationsSlice';
+import { stringToHslColor } from '../../utils/formatters';
 import './ApplicationsPage.css';
 
 function getStatusClass(status) {
@@ -88,6 +89,10 @@ export default function ApplicationsPage() {
             <span className="applications-page__stat-value" style={{ color: 'var(--success)' }}>{stats.accepted}</span>
             <span className="applications-page__stat-label">Accepted</span>
           </div>
+          <div className="applications-page__stat card">
+            <span className="applications-page__stat-value" style={{ color: 'var(--danger)' }}>{stats.rejected}</span>
+            <span className="applications-page__stat-label">Rejected</span>
+          </div>
         </div>
 
         {/* Loading */}
@@ -127,8 +132,17 @@ export default function ApplicationsPage() {
                   style={{ cursor: 'pointer' }}
                 >
                   <div className="applications-table__col applications-table__col--job">
-                    <span className="applications-table__job-title">{app.jobTitle}</span>
-                    <span className="applications-table__company text-small">{app.company}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div 
+                        className="job-detail__avatar" 
+                        style={{ width: 40, height: 40, fontSize: 16, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', flexShrink: 0, backgroundColor: stringToHslColor(app.company) }}>
+                        {app.company.charAt(0)}
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span className="applications-table__job-title">{app.jobTitle}</span>
+                        <span className="applications-table__company text-small">{app.company}</span>
+                      </div>
+                    </div>
                   </div>
                   <div className="applications-table__col applications-table__col--status">
                     <span className={`app-status ${getStatusClass(app.status)}`}>
