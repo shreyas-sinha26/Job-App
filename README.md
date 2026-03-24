@@ -5,7 +5,7 @@ A full-stack web application designed to help users track job listings and manag
 ## 🚀 Live Links
 
 * **Frontend (Render Static Site):** [https://precisionhire-frontend.onrender.com](https://precisionhire-frontend.onrender.com)
-* **Backend (Render Web Service):** [[https://precisionhire.onrender.com](https://precisionhire.onrender.com)]
+* **Backend (Render Web Service):** [https://precisionhire.onrender.com](https://precisionhire.onrender.com)
 
 ## 🛠️ Tech Stack
 
@@ -30,54 +30,56 @@ Before you begin, ensure you have the following installed on your local machine:
 * Git
 
 ### 1. Clone the Repository
-
-git clone [[https://github.com/shreyas-sinha26/Job-App](https://github.com/shreyas-sinha26/Job-App)]
-cd job-app
-
+```bash
+git clone [https://github.com/shreyas-sinha26/Job-App.git](https://github.com/shreyas-sinha26/Job-App.git)
+cd Job-App
+```
 
 ### 2. Backend Setup
 Navigate to the backend directory and install dependencies:
-
+```bash
 cd backend
 npm install
-
+```
 
 Create a `.env` file inside the `backend/` directory and add the following variables:
-
+```env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_super_secret_jwt_key
 NODE_ENV=development
-
+```
 
 Start the backend development server:
-
+```bash
 npm run dev
 # or: node server.js
-
+```
 *The backend server should now be running on `http://localhost:5000`.*
 
 ### 3. Frontend Setup
 Open a new terminal window/tab, ensure you are in the root directory of the project, and install frontend dependencies:
-
-# From the root directory (job-app)
+```bash
+# From the root directory (Job-App)
 npm install
-
+```
 
 Create a `.env` file in the root directory for Vite environment variables:
-
+```env
 VITE_API_URL=http://localhost:5000/api
-
+```
 
 Start the frontend development server:
-
+```bash
 npm run dev
+```
 *The frontend should now be running on `http://localhost:5173` (or the port Vite assigns).*
 
 ---
 
 ## 📁 Project Structure
 
+```text
 job-app/
 ├── backend/                  # Node.js/Express backend server
 │   ├── config/               # Database configuration
@@ -96,7 +98,7 @@ job-app/
 ├── index.html                # Vite HTML template
 ├── package.json              # Frontend dependencies and scripts
 └── vite.config.js            # Vite bundler configuration
-
+```
 
 ## 🚀 Deployment Instructions (Render)
 
@@ -116,5 +118,5 @@ job-app/
 6. **Important for React Router:** In Render's redirect/rewrite rules for the static site, add a rule to catch all routes and send them to `index.html` (Source: `/*`, Destination: `/index.html`, Action: `Rewrite`).
 
 ## 🤝 Contributing
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/shreyas-sinha26/Job-App).
-
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/shreyas-sinha26/Job-App/issues).
+```
