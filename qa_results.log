@@ -1,0 +1,134 @@
+﻿=== TASK -- SET UP REAL USER ACCOUNTS ===
+
+STEP ACCT1 -- Employer Account
+  Status:   PASS
+  Response: 201 {"user":{"id":"69c2b2f03cc5cc650519e895","name":"Vivek Boora","email":"vivekboora.ad23@bmsce.ac.in","role":"employer"},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzJiMmYwM2NjNWNjNjUwNTE5ZTg5NSIsImlhdCI6MTc3NDM2NzQ3MywiZXhwIjoxNzc0OTcyM...
+  Notes:    EMPLOYER_ID=69c2b2f03cc5cc650519e895
+
+STEP ACCT2 -- Jobseeker Account
+  Status:   PASS
+  Response: 201 {"user":{"id":"69c2b2f13cc5cc650519e898","name":"Vivek Jobseeker","email":"vivekboora.ad23+jobseeker@bmsce.ac.in","role":"jobseeker"},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzJiMmYxM2NjNWNjNjUwNTE5ZTg5OCIsImlhdCI6MTc3NDM2NzQ3MywiZX...
+  Notes:    JOBSEEKER_ID=69c2b2f13cc5cc650519e898
+
+=== TASK -- EMPLOYER FLOW ===
+
+STEP E1 -- Create Job Posting
+  Status:   PASS
+  Response: 201 {"job":{"title":"Full Stack Developer","company":"Vivek's Startup","companyLogo":null,"location":"Bangalore","type":"Full-time","status":"active","experience":"Mid","salaryMin":1200000,"salaryMax":1800000,"currency":"INR","tags":["React","Node.js","M...
+  Notes:    JOB_ID=69c2b2f13cc5cc650519e89b
+
+STEP E2 -- Verify job in listing
+  Status:   PASS
+  Response: 200 {"jobs":[{"title":"Full Stack Developer","company":"Vivek's Startup","companyLogo":null,"location":"Bangalore","type":"Full-time","status":"active","experience":"Mid","salaryMin":1200000,"salaryMax":1800000,"currency":"INR","tags":["React","Node.js",...
+  Notes:    Job found in listing
+
+STEP E3 -- Verify employer owns job
+  Status:   PASS
+  Response: 200 {"job":{"title":"Full Stack Developer","company":"Vivek's Startup","companyLogo":null,"location":"Bangalore","type":"Full-time","status":"active","experience":"Mid","salaryMin":1200000,"salaryMax":1800000,"currency":"INR","tags":["React","Node.js","M...
+  Notes:    employerId={"name":"Vivek Boora","email":"vivekboora.ad23@bmsce.ac.in","id":"69c2b2f03cc5cc650519e895"}, expected=69c2b2f03cc5cc650519e895
+
+=== TASK -- JOBSEEKER FLOW ===
+
+STEP J1 -- Browse jobs (search)
+  Status:   PASS
+  Response: 200 {"jobs":[{"title":"Full Stack Developer","company":"Vivek's Startup","companyLogo":null,"location":"Bangalore","type":"Full-time","status":"active","experience":"Mid","salaryMin":1200000,"salaryMax":1800000,"currency":"INR","tags":["React","Node.js",...
+  Notes:    Job found
+
+STEP J2 -- View job detail
+  Status:   PASS
+  Response: 200 {"job":{"title":"Full Stack Developer","company":"Vivek's Startup","companyLogo":null,"location":"Bangalore","type":"Full-time","status":"active","experience":"Mid","salaryMin":1200000,"salaryMax":1800000,"currency":"INR","tags":["React","Node.js","M...
+
+STEP J3 -- Apply to job
+  Status:   PASS
+  Response: 201 {"application":{"jobId":"69c2b2f13cc5cc650519e89b","userId":"69c2b2f13cc5cc650519e898","coverLetter":"I am very excited to apply for the Full Stack Developer position at Vivek's Startup. I have 3 years of experience with React and Node.js and have bu...
+  Notes:    APPLICATION_ID=69c2b2f13cc5cc650519e8b6
+
+STEP J4 -- Duplicate application prevention
+  Status:   PASS
+  Response: 409 {"message":"Already applied for this job"}
+  Notes:    Expected 409, got 409
+
+STEP J5 -- Jobseeker applications list
+  Status:   PASS
+  Response: 200 {"applications":[{"id":"69c2b2f13cc5cc650519e8b6","jobId":"69c2b2f13cc5cc650519e89b","status":"Pending","appliedAt":"2026-03-24T15:51:13.572Z","coverLetter":"I am very excited to apply for the Full Stack Developer position at Vivek's Startup. I have ...
+  Notes:    Found, status=Pending
+
+=== TASK -- EMPLOYER REVIEW FLOW ===
+
+STEP R1 -- Employer view applications
+  Status:   PASS
+  Response: 200 {"applications":[{"id":"69c2b2f13cc5cc650519e8b6","jobId":"69c2b2f13cc5cc650519e89b","status":"Pending","appliedAt":"2026-03-24T15:51:13.572Z","coverLetter":"I am very excited to apply for the Full Stack Developer position at Vivek's Startup. I have ...
+  Notes:    Found
+
+STEP R2 -- Filter applications by job
+  Status:   PASS
+  Response: 200 {"applications":[{"id":"69c2b2f13cc5cc650519e8b6","jobId":"69c2b2f13cc5cc650519e89b","status":"Pending","appliedAt":"2026-03-24T15:51:13.572Z","coverLetter":"I am very excited to apply for the Full Stack Developer position at Vivek's Startup. I have ...
+  Notes:    Filtered OK
+
+STEP R3 -- Update status to Reviewed
+  Status:   PASS
+  Response: 200 {"application":{"jobId":{"title":"Full Stack Developer","company":"Vivek's Startup","companyLogo":null,"location":"Bangalore","type":"Full-time","status":"active","experience":"Mid","salaryMin":1200000,"salaryMax":1800000,"currency":"INR","tags":["Re...
+
+STEP R4 -- Update status to Accepted
+  Status:   PASS
+  Response: 200 {"application":{"jobId":{"title":"Full Stack Developer","company":"Vivek's Startup","companyLogo":null,"location":"Bangalore","type":"Full-time","status":"active","experience":"Mid","salaryMin":1200000,"salaryMax":1800000,"currency":"INR","tags":["Re...
+
+STEP R5 -- Jobseeker sees Accepted status
+  Status:   PASS
+  Response: 200 {"applications":[{"id":"69c2b2f13cc5cc650519e8b6","jobId":"69c2b2f13cc5cc650519e89b","status":"Accepted","appliedAt":"2026-03-24T15:51:13.572Z","coverLetter":"I am very excited to apply for the Full Stack Developer position at Vivek's Startup. I have...
+  Notes:    status=Accepted
+
+=== TASK -- SECURITY CHECKS ===
+
+STEP S1 -- Jobseeker cannot create jobs
+  Status:   PASS
+  Response: 403 {"message":"Access denied. Employers only."}
+  Notes:    Expected 403, got 403
+
+STEP S2 -- Employer cannot apply to jobs
+  Status:   PASS
+  Response: 403 {"message":"Access denied. Jobseekers only."}
+  Notes:    Expected 403, got 403
+
+  Other Employer: token=obtained, id=69c2b2f13cc5cc650519e8d6
+STEP S3 -- Other employer cannot update application
+  Status:   PASS
+  Response: 403 {"message":"Not authorized to update this application"}
+  Notes:    Expected 403, got 403
+
+STEP S4 -- No token = 401
+  Status:   PASS
+  Response: 401 {"message":"No token, authorization denied"}
+  Notes:    Expected 401, got 401
+
+  Other job created: undefined
+STEP S5 -- Employer only sees own jobs apps
+  Status:   PASS
+  Response: 200 {"applications":[{"id":"69c2b2f13cc5cc650519e8b6","jobId":"69c2b2f13cc5cc650519e89b","status":"Accepted","appliedAt":"2026-03-24T15:51:13.572Z","coverLetter":"I am very excited to apply for the Full Stack Developer position at Vivek's Startup. I have...
+  Notes:    Correctly isolated
+
+=== TASK -- CLEANUP ===
+
+STEP C1 -- Delete job
+  Status:   PASS
+  Response: 200 {"message":"Job deleted successfully"}
+
+STEP C2 -- Cascade delete applications
+  Status:   PASS
+  Response: 200 {"applications":[]}
+  Notes:    Application removed
+
+
+=== SUMMARY ===
+Total Steps:  22
+Passed:       22
+Failed:       0
+
+IDs Generated:
+  EMPLOYER_ID:       69c2b2f03cc5cc650519e895
+  JOBSEEKER_ID:      69c2b2f13cc5cc650519e898
+  JOB_ID:            69c2b2f13cc5cc650519e89b
+  APPLICATION_ID:    69c2b2f13cc5cc650519e8b6
+  OTHER_EMPLOYER_ID: 69c2b2f13cc5cc650519e8d6
+
+Final Status: App is working correctly with real user accounts PASS
