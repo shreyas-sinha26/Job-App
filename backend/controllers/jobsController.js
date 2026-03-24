@@ -19,7 +19,10 @@ exports.getJobs = async (req, res, next) => {
     }
     if (location) query.location = { $regex: location, $options: 'i' };
     if (experience) query.experience = experience;
-    
+    if (req.query.employerId) {
+      query.employerId = req.query.employerId;
+      console.log('QUERY EMPLOYERID APPLIED:', query.employerId);
+    }
     if (salaryMin || salaryMax) {
       query.$and = [];
       if (salaryMin) query.$and.push({ salaryMin: { $gte: Number(salaryMin) } });

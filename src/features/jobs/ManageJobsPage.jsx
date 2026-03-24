@@ -61,8 +61,10 @@ export default function ManageJobsPage() {
   const tagsWatch = watch('tags') || '';
 
   useEffect(() => {
-    dispatch(fetchJobs({}));
-  }, [dispatch]);
+    if (user?.id) {
+      dispatch(fetchJobs({ employerId: user.id }));
+    }
+  }, [dispatch, user?.id]);
 
   const openCreateForm = () => {
     setEditingJob(null);

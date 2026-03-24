@@ -16,6 +16,7 @@ export const fetchJobs = createAsyncThunk(
       if (filters.location) params.set('location', filters.location);
       if (filters.experience) params.set('experience', filters.experience);
       if (filters.sortBy) params.set('sortBy', filters.sortBy);
+      if (filters.employerId) params.set('employerId', filters.employerId);
 
       const response = await api.get(`/jobs?${params.toString()}`);
       return response.data; // { jobs, total }

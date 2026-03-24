@@ -222,6 +222,22 @@ export const handlers = [
     const token = authHeader.replace('Bearer ', '');
     const userId = token.replace('mock-jwt-token-', '');
 
+    const user = seedUsers.find((u) => u.id === userId);
+
+    if (user && user.role === 'employer') {
+      const allApps = applications
+        .map((a) => {
+          const job = jobs.find((j) => j.id === a.jobId);
+          return {
+            ...a,
+            jobTitle: job?.title || 'Unknown',
+            company: job?.company || 'Unknown',
+          };
+        })
+        .sort((a, b) => new Date(b.appliedAt) - new Date(a.appliedAt));
+      return HttpResponse.json({ applications: allApps, total: allApps.length });
+    }
+
     const userApps = applications
       .filter((a) => a.userId === userId)
       .sort((a, b) => new Date(b.appliedAt) - new Date(a.appliedAt));
