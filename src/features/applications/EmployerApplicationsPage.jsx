@@ -193,7 +193,7 @@ export default function EmployerApplicationsPage() {
                   >
                     <div className="emp-apps__list-item-top">
                       <div className="emp-apps__list-item-info">
-                        <span className="emp-apps__applicant-name">Applicant</span>
+                        <span className="emp-apps__applicant-name">{app.applicant ? app.applicant.name : 'Unknown Applicant'}</span>
                         <span className="emp-apps__job-ref text-small">{app.jobTitle}</span>
                       </div>
                       <span className={`app-status ${getStatusClass(app.status)}`}>
@@ -220,6 +220,14 @@ export default function EmployerApplicationsPage() {
                   </div>
 
                   <div className="emp-apps__detail-meta">
+                    <div className="emp-apps__detail-row">
+                      <span className="emp-apps__detail-label">Applicant</span>
+                      <span className="emp-apps__detail-value">{selectedApp.applicant ? selectedApp.applicant.name : 'Unknown'}</span>
+                    </div>
+                    <div className="emp-apps__detail-row">
+                      <span className="emp-apps__detail-label">Email</span>
+                      <span className="emp-apps__detail-value">{selectedApp.applicant ? selectedApp.applicant.email : 'Unknown'}</span>
+                    </div>
                     <div className="emp-apps__detail-row">
                       <span className="emp-apps__detail-label">Position</span>
                       <span className="emp-apps__detail-value">{selectedApp.jobTitle}</span>

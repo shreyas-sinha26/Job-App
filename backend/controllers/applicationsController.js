@@ -48,14 +48,14 @@ exports.getApplications = async (req, res, next) => {
 
       const formatted = applications.map(app => ({
         id: app._id,
-        jobId: app.jobId._id,
+        jobId: app.jobId ? app.jobId._id : null,
         status: app.status,
         appliedAt: app.appliedAt,
         coverLetter: app.coverLetter,
-        jobTitle: app.jobId.title,
-        company: app.jobId.company,
-        location: app.jobId.location,
-        type: app.jobId.type
+        jobTitle: app.jobId ? app.jobId.title : 'Deleted Job',
+        company: app.jobId ? app.jobId.company : 'Unknown Company',
+        location: app.jobId ? app.jobId.location : 'Unknown Location',
+        type: app.jobId ? app.jobId.type : 'Unknown Type'
       }));
 
       return res.json({ applications: formatted });

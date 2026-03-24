@@ -98,8 +98,11 @@ const applicationsSlice = createSlice({
     builder
       .addCase(updateApplicationStatus.fulfilled, (state, action) => {
         const updated = action.payload.application;
-        const idx = state.items.findIndex((a) => a.id === updated.id);
-        if (idx !== -1) state.items[idx] = updated;
+        const idToUpdate = updated.id || updated._id;
+        const idx = state.items.findIndex((a) => a.id === idToUpdate);
+        if (idx !== -1) {
+          state.items[idx].status = updated.status;
+        }
       })
       .addCase(updateApplicationStatus.rejected, (state, action) => {
         state.error = action.payload;
