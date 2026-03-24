@@ -12,8 +12,10 @@
 .jobs-sidebar {
   width: 260px;
   min-width: 260px;
-  background: var(--bg-surface);
-  border-right: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-right: 1px solid rgba(226, 232, 240, 0.6);
   padding: 24px 20px;
   display: flex;
   flex-direction: column;
@@ -118,6 +120,9 @@
 
 .jobs-main__header {
   margin-bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 
 .jobs-main__header h1 {

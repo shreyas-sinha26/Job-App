@@ -41,6 +41,13 @@
   align-items: center;
   justify-content: space-between;
   height: 72px;
+  padding: 0 40px; /* added for edge spacing */
+}
+
+@media (max-width: 768px) {
+  .landing__nav-inner {
+    padding: 0 24px;
+  }
 }
 
 .landing__nav-actions {

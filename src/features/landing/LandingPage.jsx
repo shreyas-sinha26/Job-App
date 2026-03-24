@@ -236,7 +236,7 @@ export default function LandingPage() {
     <div className="landing">
       {/* ── Top Nav ────────────────────────────────────────── */}
       <header ref={navRef} className={`landing__nav ${navScrolled ? 'landing__nav--scrolled' : ''}`}>
-        <div className="landing__nav-inner container">
+        <div className="landing__nav-inner">
           <Link to="/" className="navbar__brand">
             <span className="navbar__brand-accent">Precision</span>Hire
           </Link>

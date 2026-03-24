@@ -76,10 +76,13 @@
 }
 
 .manage-jobs__table {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(226, 232, 240, 0.6);
   border-radius: var(--radius-card);
   overflow: hidden;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.04);
 }
 
 .manage-jobs__table-head {
@@ -87,8 +90,8 @@
   grid-template-columns: 2fr 1fr 1fr 1fr 1fr 80px 100px;
   align-items: center;
   padding: 12px 20px;
-  background: var(--bg-subtle);
-  border-bottom: 1px solid var(--border);
+  background: rgba(238, 240, 245, 0.4);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
