@@ -26,10 +26,10 @@ export default function ManageJobsPage() {
   const user = useSelector(selectCurrentUser);
   const jobs = useSelector(selectAllJobs);
   const status = useSelector(selectJobsStatus);
-  const createStatus = useSelector(selectJobCreateStatus);
 
-  const [showForm, setShowForm] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingJob, setEditingJob] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [deletingIds, setDeletingIds] = useState([]);
@@ -40,25 +40,24 @@ export default function ManageJobsPage() {
     reset,
     watch,
     trigger,
-    formState: { errors, isValid, touchedFields, dirtyFields }
+    formState: { errors }
   } = useForm({
-    mode: 'onTouched',
     defaultValues: {
       title: '',
       company: '',
       location: '',
-      type: 'Full-time',
-      experience: 'Mid',
+      type: '',
+      experience: '',
+      description: '',
       salaryMin: '',
       salaryMax: '',
+      currency: 'INR',
       tags: '',
-      description: '',
+      deadline: ''
     }
   });
 
-  const salaryMinWatch = watch('salaryMin');
   const descriptionWatch = watch('description') || '';
-  const tagsWatch = watch('tags') || '';
 
   useEffect(() => {
     if (user?.id) {
@@ -66,23 +65,27 @@ export default function ManageJobsPage() {
     }
   }, [dispatch, user?.id]);
 
+  /* ── Open create form ─────────────────────────────────────── */
   const openCreateForm = () => {
     setEditingJob(null);
     reset({
       title: '',
       company: user?.name || '',
       location: '',
-      type: 'Full-time',
-      experience: 'Mid',
+      type: '',
+      experience: '',
+      description: '',
       salaryMin: '',
       salaryMax: '',
+      currency: 'INR',
       tags: '',
-      description: '',
+      deadline: ''
     });
     setStep(1);
-    setShowForm(true);
+    setShowModal(true);
   };
 
+  /* ── Open edit form ───────────────────────────────────────── */
   const openEditForm = (job) => {
     setEditingJob(job);
     reset({
@@ -91,29 +94,48 @@ export default function ManageJobsPage() {
       location: job.location,
       type: job.type,
       experience: job.experience,
+      description: job.description,
       salaryMin: String(job.salaryMin),
       salaryMax: String(job.salaryMax),
+      currency: job.currency || 'INR',
       tags: job.tags ? job.tags.join(', ') : '',
-      description: job.description,
+      deadline: job.deadline ? job.deadline.split('T')[0] : ''
     });
     setStep(1);
-    setShowForm(true);
+    setShowModal(true);
   };
 
-  const onSubmit = async (data) => {
-    const jobData = {
-      ...data,
-      salaryMin: Number(data.salaryMin),
-      salaryMax: Number(data.salaryMax),
-      currency: 'INR',
-      tags: data.tags
-        .split(',')
-        .map((t) => t.trim())
-        .filter(Boolean),
-      employerId: user?.id || 'emp-mock',
-    };
+  /* ── Close modal ──────────────────────────────────────────── */
+  const closeModal = () => {
+    setShowModal(false);
+    setStep(1);
+    setEditingJob(null);
+    reset();
+  };
 
+  /* ── Submit handler ───────────────────────────────────────── */
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
     try {
+      const tagsArray = data.tags
+        .split(',')
+        .map(t => t.trim())
+        .filter(t => t.length > 0);
+
+      const jobData = {
+        title: data.title.trim(),
+        company: data.company.trim(),
+        location: data.location.trim(),
+        type: data.type,
+        experience: data.experience,
+        description: data.description.trim(),
+        salaryMin: Number(data.salaryMin),
+        salaryMax: Number(data.salaryMax),
+        currency: 'INR',
+        tags: tagsArray,
+        deadline: data.deadline || null
+      };
+
       if (editingJob) {
         await dispatch(updateJob({ id: editingJob.id, ...jobData })).unwrap();
         toast.success('Job listing updated.');
@@ -121,13 +143,20 @@ export default function ManageJobsPage() {
         await dispatch(createJob(jobData)).unwrap();
         toast.success('Job posted successfully!');
       }
-      setShowForm(false);
-      setEditingJob(null);
+
+      closeModal();
+
+      // Refresh jobs list
+      dispatch(fetchJobs({ employerId: user?.id }));
+
     } catch (err) {
-      toast.error('Network error. Something went wrong.');
+      toast.error(err?.message || 'Failed to post job. Try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  /* ── Delete handler ───────────────────────────────────────── */
   const handleDelete = useCallback(async (id) => {
     setDeletingIds(prev => [...prev, id]);
     setDeleteConfirm(null);
@@ -140,25 +169,19 @@ export default function ManageJobsPage() {
     }
   }, [dispatch]);
 
+  const handleAppCountClick = (jobId) => {
+    navigate('/employer/applications', { state: { filterJobId: jobId } });
+  };
+
+  /* ── Derived data ─────────────────────────────────────────── */
   const displayedJobs = jobs.filter(j => !deletingIds.includes(j.id));
-  
   const activeJobs = jobs.filter(j => j.status !== 'paused').length;
   const totalApplications = jobs.reduce((sum, j) => sum + (j.applicationsCount || 0), 0);
   const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   const newThisWeek = jobs.filter(j => new Date(j.postedAt) > oneWeekAgo).length;
-  const applyRate = totalApplications > 0 ? ((totalApplications / (activeJobs || 1)) / 100 * 100).toFixed(1) : 0; // The instruction says (total / (activeJobs * 100)) * 100 which cancels out 100. So (total / activeJobs). Wait, the formula was exactly given as `((totalApplications / (activeJobs * 100)) * 100).toFixed(1)`. Let's just do `(totalApplications && activeJobs ? ((totalApplications / activeJobs) * 100).toFixed(1) : 0)`. Wait, I will use `((totalApplications / ((activeJobs||1) * 100)) * 100).toFixed(1)` to mirror what was requested without div by 0. Wait, `(total/(activeJobs*100))*100` means `total / activeJobs`. No, applyRate should be `total / activeJobs`? Wait if there's 5 apps for 1 job, apply rate is 500%?! No, if it's applications divided by views * 100. We don't have views. The prompt says exactly this copy. Ok!
-
-
-
-  const getFieldState = (fieldName) => {
-    if (errors[fieldName]) return 'error';
-    if (dirtyFields[fieldName] && touchedFields[fieldName]) return 'valid';
-    return 'neutral';
-  };
-
-  const handleAppCountClick = (jobId) => {
-      navigate('/employer/applications', { state: { filterJobId: jobId } });
-  };
+  const applyRate = totalApplications && activeJobs
+    ? (totalApplications / activeJobs).toFixed(1)
+    : 0;
 
   return (
     <div className="manage-jobs page-enter">
@@ -300,189 +323,261 @@ export default function ManageJobsPage() {
         )}
       </div>
 
-      {/* ── Create/Edit Modal ─────────────────────────────────── */}
-      {showForm && (
-        <div className="apply-overlay" onClick={() => setShowForm(false)}>
-          <div
-            className="manage-jobs__form-modal card"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-          >
-            <button
-              className="apply-modal__close"
-              onClick={() => setShowForm(false)}
-              aria-label="Close"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-
-            <h2 className="text-h2" style={{ marginBottom: 24 }}>
-              {editingJob ? 'Edit Job Posting' : 'Create New Job'}
-            </h2>
-            
-            <div className="modal__steps">
-              {[1, 2].map(n => (
-                <div 
-                  key={n}
-                  className={`modal__step-dot ${step >= n ? 'modal__step-dot--active' : ''}`}
-                />
-              ))}
+      {/* ══════════════════════════════════════════════════════════
+           CREATE / EDIT MODAL
+         ══════════════════════════════════════════════════════════ */}
+      {showModal && (
+        <div
+          className="modal-backdrop"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeModal();
+          }}
+        >
+          <div className="modal-card">
+            {/* Header */}
+            <div className="modal-card__header">
+              <h2 className="modal-card__title">
+                {editingJob
+                  ? 'Edit Job Posting'
+                  : step === 1
+                    ? 'Create New Job'
+                    : 'Job Details'}
+              </h2>
+              <button
+                className="modal-card__close"
+                onClick={closeModal}
+              >
+                ✕
+              </button>
             </div>
 
-            <form className="manage-jobs__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-              <div className="manage-jobs__form-grid">
-                {step === 1 && (
-                  <>
-                    {/* Title */}
-                    <div className="manage-jobs__form-field manage-jobs__form-field--full">
-                      <label>Job Title *</label>
-                  <input
-                    className={`input ${getFieldState('title') === 'error' ? 'input--error' : ''} ${getFieldState('title') === 'valid' ? 'input--success' : ''}`}
-                    placeholder="e.g., Senior Frontend Engineer"
-                    {...register('title', {
-                      required: 'Title is required',
-                      minLength: { value: 5, message: 'Must be at least 5 characters' }
-                    })}
-                  />
-                  {errors.title && <span className="auth-field__error" aria-live="polite">{errors.title.message}</span>}
-                </div>
+            {/* Progress dots */}
+            <div className="modal-steps">
+              <div className={`modal-step-dot ${step >= 1 ? 'modal-step-dot--active' : ''}`} />
+              <div className={`modal-step-dot ${step >= 2 ? 'modal-step-dot--active' : ''}`} />
+            </div>
 
-                {/* Company */}
-                <div className="manage-jobs__form-field">
-                  <label>Company *</label>
-                  <input
-                    className={`input ${getFieldState('company') === 'error' ? 'input--error' : ''} ${getFieldState('company') === 'valid' ? 'input--success' : ''}`}
-                    placeholder="Company name"
-                    {...register('company', { required: 'Company is required' })}
-                  />
-                  {errors.company && <span className="auth-field__error" aria-live="polite">{errors.company.message}</span>}
-                </div>
+            {/* Form */}
+            <form onSubmit={handleSubmit(onSubmit)}>
 
-                {/* Location */}
-                <div className="manage-jobs__form-field">
-                  <label>Location *</label>
-                  <input
-                     className={`input ${getFieldState('location') === 'error' ? 'input--error' : ''} ${getFieldState('location') === 'valid' ? 'input--success' : ''}`}
-                    placeholder="e.g., Bangalore"
-                    {...register('location', { required: 'Location is required' })}
-                  />
-                  {errors.location && <span className="auth-field__error" aria-live="polite">{errors.location.message}</span>}
-                </div>
+              {/* ── STEP 1 FIELDS ── */}
+              {step === 1 && (
+                <div className="modal-card__body">
 
-                {/* Type */}
-                <div className="manage-jobs__form-field">
-                  <label>Job Type *</label>
-                  <select className="input" {...register('type', { required: 'Required' })}>
-                    {JOB_TYPES.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
+                  <div className="form-group">
+                    <label className="form-label">Job Title *</label>
+                    <input
+                      className={`form-input ${errors.title ? 'form-input--error' : ''}`}
+                      placeholder="e.g. Senior React Developer"
+                      {...register('title', {
+                        required: 'Job title is required',
+                        minLength: {
+                          value: 5,
+                          message: 'Title must be at least 5 characters'
+                        }
+                      })}
+                    />
+                    {errors.title && (
+                      <span className="form-error">{errors.title.message}</span>
+                    )}
+                  </div>
 
-                    {/* Experience */}
-                    <div className="manage-jobs__form-field">
-                      <label>Experience *</label>
-                      <select className="input" {...register('experience', { required: 'Required' })}>
-                        {EXP_LEVELS.map((e) => (
-                          <option key={e} value={e}>{e}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </>
-                )}
+                  <div className="form-group">
+                    <label className="form-label">Company *</label>
+                    <input
+                      className={`form-input ${errors.company ? 'form-input--error' : ''}`}
+                      placeholder="e.g. Razorpay"
+                      {...register('company', {
+                        required: 'Company name is required'
+                      })}
+                    />
+                    {errors.company && (
+                      <span className="form-error">{errors.company.message}</span>
+                    )}
+                  </div>
 
-                {step === 2 && (
-                  <>
-                    {/* Salary Min */}
-                <div className="manage-jobs__form-field">
-                  <label>Min Salary (₹) *</label>
-                  <input
-                    type="number"
-                     className={`input ${getFieldState('salaryMin') === 'error' ? 'input--error' : ''} ${getFieldState('salaryMin') === 'valid' ? 'input--success' : ''}`}
-                    placeholder="e.g., 1400000"
-                    {...register('salaryMin', {
-                      required: 'Required',
-                      min: { value: 1, message: 'Must be greater than 0' }
-                    })}
-                  />
-                  {errors.salaryMin && <span className="auth-field__error" aria-live="polite">{errors.salaryMin.message}</span>}
-                </div>
+                  <div className="form-group">
+                    <label className="form-label">Location *</label>
+                    <input
+                      className={`form-input ${errors.location ? 'form-input--error' : ''}`}
+                      placeholder="e.g. Bangalore / Remote"
+                      {...register('location', {
+                        required: 'Location is required'
+                      })}
+                    />
+                    {errors.location && (
+                      <span className="form-error">{errors.location.message}</span>
+                    )}
+                  </div>
 
-                {/* Salary Max */}
-                <div className="manage-jobs__form-field">
-                  <label>Max Salary (₹) *</label>
-                  <input
-                    type="number"
-                    className={`input ${getFieldState('salaryMax') === 'error' ? 'input--error' : ''} ${getFieldState('salaryMax') === 'valid' ? 'input--success' : ''}`}
-                    placeholder="e.g., 2000000"
-                    {...register('salaryMax', {
-                      required: 'Required',
-                      validate: value => !salaryMinWatch || Number(value) > Number(salaryMinWatch) || 'Max salary must be greater than min salary'
-                    })}
-                  />
-                  {errors.salaryMax && <span className="auth-field__error" aria-live="polite">{errors.salaryMax.message}</span>}
-                </div>
-
-                {/* Tags */}
-                <div className="manage-jobs__form-field manage-jobs__form-field--full">
-                  <label>Tags (comma separated) *</label>
-                  <input
-                    className={`input ${getFieldState('tags') === 'error' ? 'input--error' : ''} ${getFieldState('tags') === 'valid' ? 'input--success' : ''}`}
-                    placeholder="React, Node.js, TypeScript"
-                    {...register('tags', {
-                      required: 'At least 1 tag is required',
-                      validate: value => value.split(',').filter(t => t.trim()).length > 0 || 'At least 1 tag is required'
-                    })}
-                  />
-                  {errors.tags && <span className="auth-field__error" aria-live="polite">{errors.tags.message}</span>}
-                </div>
-
-                    {/* Description */}
-                    <div className="manage-jobs__form-field manage-jobs__form-field--full">
-                      <label>Description (HTML supported) *</label>
-                      <textarea
-                        className={`textarea ${getFieldState('description') === 'error' ? 'input--error' : ''} ${getFieldState('description') === 'valid' ? 'input--success' : ''}`}
-                        placeholder="Describe the role, responsibilities, and requirements…"
-                        rows={6}
-                        {...register('description', {
-                          required: 'Description is required',
-                          minLength: { value: 100, message: 'Must be at least 100 characters' }
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Job Type *</label>
+                      <select
+                        className={`form-input ${errors.type ? 'form-input--error' : ''}`}
+                        {...register('type', {
+                          required: 'Job type is required'
                         })}
-                      />
-                      <div className="apply-modal__char-count text-xsmall" style={{ color: descriptionWatch.length < 100 && touchedFields.description ? 'var(--danger)' : 'var(--text-muted)' }}>
-                        {descriptionWatch.length} / 100 min
-                      </div>
-                      {errors.description && <span className="auth-field__error" aria-live="polite">{errors.description.message}</span>}
+                      >
+                        <option value="">Select type</option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Remote">Remote</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Internship">Internship</option>
+                      </select>
+                      {errors.type && (
+                        <span className="form-error">{errors.type.message}</span>
+                      )}
                     </div>
-                  </>
-                )}
-              </div>
 
-              <div className="manage-jobs__form-actions">
-                {step === 1 ? (
-                  <>
+                    <div className="form-group">
+                      <label className="form-label">Experience *</label>
+                      <select
+                        className={`form-input ${errors.experience ? 'form-input--error' : ''}`}
+                        {...register('experience', {
+                          required: 'Experience level is required'
+                        })}
+                      >
+                        <option value="">Select level</option>
+                        <option value="Entry">Entry</option>
+                        <option value="Mid">Mid</option>
+                        <option value="Senior">Senior</option>
+                        <option value="Lead">Lead</option>
+                      </select>
+                      {errors.experience && (
+                        <span className="form-error">{errors.experience.message}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Step 1 Footer */}
+                  <div className="modal-card__footer">
                     <button
                       type="button"
                       className="btn btn--ghost"
-                      onClick={() => setShowForm(false)}
+                      onClick={closeModal}
                     >
                       Cancel
                     </button>
                     <button
                       type="button"
-                      className="btn btn--primary btn--lg"
-                      onClick={() => {
-                        trigger(['title','company','location','type','experience']).then(valid => {
-                          if (valid) setStep(2);
-                        });
+                      className="btn btn--primary"
+                      onClick={async () => {
+                        const valid = await trigger([
+                          'title', 'company', 'location',
+                          'type', 'experience'
+                        ]);
+                        if (valid) setStep(2);
                       }}
                     >
                       Next →
                     </button>
-                  </>
-                ) : (
-                  <>
+                  </div>
+                </div>
+              )}
+
+              {/* ── STEP 2 FIELDS ── */}
+              {step === 2 && (
+                <div className="modal-card__body">
+
+                  <div className="form-group">
+                    <label className="form-label">Job Description *</label>
+                    <textarea
+                      className={`form-input form-textarea ${errors.description ? 'form-input--error' : ''}`}
+                      placeholder="Describe the role, responsibilities, and what you are looking for... (min 100 characters)"
+                      rows={5}
+                      {...register('description', {
+                        required: 'Description is required',
+                        minLength: {
+                          value: 100,
+                          message: 'Description must be at least 100 characters'
+                        }
+                      })}
+                    />
+                    <div className="form-char-count" style={{
+                      color: descriptionWatch.length < 100 ? 'var(--danger)' : 'var(--text-muted)'
+                    }}>
+                      {descriptionWatch.length} / 100 min
+                    </div>
+                    {errors.description && (
+                      <span className="form-error">{errors.description.message}</span>
+                    )}
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Min Salary (₹) *</label>
+                      <input
+                        type="number"
+                        className={`form-input ${errors.salaryMin ? 'form-input--error' : ''}`}
+                        placeholder="e.g. 1200000"
+                        {...register('salaryMin', {
+                          required: 'Min salary is required',
+                          min: { value: 1, message: 'Must be greater than 0' },
+                          validate: value =>
+                            !watch('salaryMax') ||
+                            Number(value) < Number(watch('salaryMax')) ||
+                            'Must be less than max salary'
+                        })}
+                      />
+                      {errors.salaryMin && (
+                        <span className="form-error">{errors.salaryMin.message}</span>
+                      )}
+                    </div>
+
+                    <div className="form-group">
+                      <label className="form-label">Max Salary (₹) *</label>
+                      <input
+                        type="number"
+                        className={`form-input ${errors.salaryMax ? 'form-input--error' : ''}`}
+                        placeholder="e.g. 1800000"
+                        {...register('salaryMax', {
+                          required: 'Max salary is required',
+                          validate: value =>
+                            !watch('salaryMin') ||
+                            Number(value) > Number(watch('salaryMin')) ||
+                            'Must be greater than min salary'
+                        })}
+                      />
+                      {errors.salaryMax && (
+                        <span className="form-error">{errors.salaryMax.message}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">
+                      Skills / Tags *
+                      <span className="form-label__hint">(comma separated)</span>
+                    </label>
+                    <input
+                      className={`form-input ${errors.tags ? 'form-input--error' : ''}`}
+                      placeholder="e.g. React, Node.js, MongoDB"
+                      {...register('tags', {
+                        required: 'At least one skill tag is required'
+                      })}
+                    />
+                    {errors.tags && (
+                      <span className="form-error">{errors.tags.message}</span>
+                    )}
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">
+                      Application Deadline
+                      <span className="form-label__hint">(optional)</span>
+                    </label>
+                    <input
+                      type="date"
+                      className="form-input"
+                      min={new Date().toISOString().split('T')[0]}
+                      {...register('deadline')}
+                    />
+                  </div>
+
+                  {/* Step 2 Footer */}
+                  <div className="modal-card__footer">
                     <button
                       type="button"
                       className="btn btn--ghost"
@@ -492,14 +587,18 @@ export default function ManageJobsPage() {
                     </button>
                     <button
                       type="submit"
-                      className="btn btn--primary btn--lg"
-                      disabled={createStatus === 'loading' || !isValid}
+                      className="btn btn--primary"
+                      disabled={isSubmitting}
                     >
-                      {createStatus === 'loading' ? 'Saving…' : editingJob ? 'Update Job' : 'Save & Publish'}
+                      {isSubmitting
+                        ? 'Publishing...'
+                        : editingJob
+                          ? 'Update Job'
+                          : 'Save & Publish'}
                     </button>
-                  </>
-                )}
-              </div>
+                  </div>
+                </div>
+              )}
             </form>
           </div>
         </div>
@@ -507,7 +606,7 @@ export default function ManageJobsPage() {
 
       {/* ── Delete Confirm ────────────────────────────────────── */}
       {deleteConfirm && (
-        <div className="apply-overlay" onClick={() => setDeleteConfirm(null)}>
+        <div className="modal-backdrop" onClick={() => setDeleteConfirm(null)}>
           <div
             className="manage-jobs__confirm card"
             onClick={(e) => e.stopPropagation()}
